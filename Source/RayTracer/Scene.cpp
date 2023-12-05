@@ -29,7 +29,7 @@ void Scene::Render(Canvas& canvas)
 		}
 	}
 }
-color3_t Scene::Trace(const ray_t& ray, float minDistance, float maxDistance, raycastHit_t& raycastHit)
+color3_t Scene::Trace(const ray_t& ray, float minDistance, float maxDistance, raycastHit_t& raycastHit, int depth)
 {
 	bool rayHit = false;
 	float closestDistance = maxDistance;
@@ -52,9 +52,9 @@ color3_t Scene::Trace(const ray_t& ray, float minDistance, float maxDistance, ra
 		ray_t scattered;
 		color3_t color;
 
-		if (raycastHit.material->Scatter(ray, raycastHit, color, scattered))
+		if (depth > 0 && raycastHit.material->Scatter(ray, raycastHit, color, scattered))
 		{
-			return color3_t(1 - (raycastHit.distance / maxDistance));
+			return color * Trace(scattered, minDistance, maxDistance, raycastHit, depth - 1);
 		}
 		else
 		{
