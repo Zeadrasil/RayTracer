@@ -9,9 +9,17 @@ struct ray_t
 		this->direction = direction;
 	}
 
-	glm::vec3 At(float distance) { return origin + (direction * distance); };
+	glm::vec3 At(float distance) const { return origin + (direction * distance); };
 	glm::vec3 operator*(float distance) { return origin + (direction * distance); };
 
 	glm::vec3 origin;
 	glm::vec3 direction;
+};
+
+struct raycastHit_t
+{
+	float distance;;
+	glm::vec3 point;
+	glm::vec3 normal;
+	class Material* material { nullptr };
 };
