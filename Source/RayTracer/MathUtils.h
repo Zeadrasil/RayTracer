@@ -10,7 +10,7 @@ inline glm::vec3 cross(const glm::vec3& a, const glm::vec3& b)
 }
 inline float dot(const glm::vec3& a, const glm::vec3& b)
 {
-	return a.x * b.x + a.y * b.y + a.z + b.z;
+	return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 inline glm::vec3 reflect(glm::vec3 v, glm::vec3 n)
 {
