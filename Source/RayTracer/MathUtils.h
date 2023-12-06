@@ -16,3 +16,11 @@ inline glm::vec3 reflect(glm::vec3 v, glm::vec3 n)
 {
 	return v - 2.0f * dot(n, v) * n;
 }
+inline bool approximately(float value1, float value2)
+{
+	return abs(value1 - value2) < FLT_EPSILON;
+}
+inline bool approximately(float value1, float value2, float errorMargin)
+{
+	return abs(value1 - value2) < errorMargin;
+}
