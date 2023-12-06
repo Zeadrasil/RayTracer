@@ -2,7 +2,8 @@
 #include "Camera.h"
 #include "MathUtils.h"
 #include "Material.h"
-void Scene::Render(Canvas& canvas)
+#include "Random.h"
+void Scene::Render(Canvas& canvas, int numSamples)
 {
 	// cast ray for each point (pixel) on the canvas
 	for (int y = 0; y < canvas.GetSize().y; y++)
@@ -11,20 +12,24 @@ void Scene::Render(Canvas& canvas)
 		{
 			// create vec2 pixel from canvas x,y
 			glm::vec2 pixel = { x, y };
+			color3_t color{ 0 };
+			for (int i = 0; i < numSamples; i++)
+			{
 				// get normalized (0 - 1) point coordinates from pixel
-			glm::vec2 point = { pixel.x / canvas.GetSize().x, pixel.y / canvas.GetSize().y };
+				glm::vec2 point = { (pixel + glm::vec2(Randomf(), Randomf())) / glm::vec2(canvas.GetSize())};
 				// flip y
-			point.y = 1.0f - point.y;
+				point.y = 1.0f - point.y;
 
-			// create ray from camera
-			ray_t ray = camera->GetRay(point);
+				// create ray from camera
+				ray_t ray = camera->GetRay(point);
 
-			// cast ray into scene
-			// set color value from trace
-			raycastHit_t raycastHit;
-			color3_t color = Trace(ray, 0, 12.5f, raycastHit);
-
+				// cast ray into scene
+				// set color value from trace
+				raycastHit_t raycastHit;
+				color += Trace(ray, 0, 12.5f, raycastHit, depth);
+			}
 			// draw color to canvas point (pixel)
+			color /= numSamples;
 			canvas.DrawPoint(pixel, color4_t(color, 1));
 		}
 	}

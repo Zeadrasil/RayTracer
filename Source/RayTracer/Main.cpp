@@ -21,16 +21,18 @@ int main(int argc, char *argv[])
 	Scene scene = Scene(20); // sky color could be set with the top and bottom color
 	
 	scene.SetCamera(camera);
-	auto material = std::make_shared<Lambertian>(color3_t{ 0, 0, 1 });
+	auto lambertian = std::make_shared<Lambertian>(color3_t{ 0, 0, 1 });
+	auto metal = std::make_shared<Metal>(color3_t{ 1, 1, 1 }, 0.0f);
 	for (int i = 0; i < 10; i++)
 	{
+		auto material = Random(2) == 1 ? std::dynamic_pointer_cast<Material>(lambertian) : std::dynamic_pointer_cast<Material>(metal);
 		auto sphere = std::make_unique<Sphere>(glm::vec3{ Randomf(-7.5f, 7.5f), Randomf(-7.5f, 7.5f), Randomf(-15, -5)}, Randomf(0.5f, 5.0f), material);
 		scene.AddObject(std::move(sphere));
 	}
 	bool going = true;
 	while (going)
 	{
-		scene.Render(canvas);
+		scene.Render(canvas, 50);
 		canvas.Update();
 		renderer.PresentCanvas(canvas);
 		SDL_Event event;
