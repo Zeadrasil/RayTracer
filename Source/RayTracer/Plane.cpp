@@ -11,23 +11,23 @@ bool Plane::Hit(const ray_t& ray, float minDistance, float maxDistance, raycastH
     }
 
     // get t (distance) along ray direction to hit point
-    float t = dot(center - ray.origin, normal) / denominator;
+    float t = glm::dot(center - ray.origin, normal) / denominator;
     if (t < 0)
     {
         return false; // plane behind ray's origin, no intersection
     }
 
     // check if t is outside min and max distance
-    if (t > maxDistance || t < minDistance)
+    if (t >= maxDistance || t <= minDistance)
     {
         return false;
     }
 
     // set raycast hit 
     raycastHit.distance = t;
-    raycastHit.point = ray.At(t);
-    raycastHit.normal = normal;
-    raycastHit.material = material.get();
+    raycastHit.point = ray.At(raycastHit.distance);
+    raycastHit.normal = glm::normalize(normal);
+    raycastHit.material = GetMaterial();
 
     return true;
 }

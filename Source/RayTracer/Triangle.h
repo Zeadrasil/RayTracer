@@ -1,5 +1,6 @@
 #pragma once
 #include "Object.h"
+
 class Triangle : public Object
 {
 public:
@@ -18,4 +19,3 @@ private:
 	glm::vec3 v2{ 0, 0, 0 };
 	glm::vec3 v3{ 0, 0, 0 };
 };
-

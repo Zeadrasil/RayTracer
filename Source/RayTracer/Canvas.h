@@ -15,7 +15,7 @@ public:
 	void Clear(const color4_t& color);
 	void DrawPoint(const glm::ivec2& point, const color4_t& color);
 
-	glm::ivec2 GetSize() { return size; };
+	const glm::ivec2 GetSize() const { return size; };
 	friend Renderer;
 private:
 	glm::ivec2 size{ 0 };

@@ -1,5 +1,6 @@
 #include "Triangle.h"
 #include "MathUtils.h"
+
 bool Triangle::Hit(const ray_t& ray, float minDistance, float maxDistance, raycastHit_t& raycastHit)
 {
     // set edges of the triangle
@@ -42,6 +43,7 @@ bool Triangle::Hit(const ray_t& ray, float minDistance, float maxDistance, rayca
         raycastHit.point = ray.At(t);
         raycastHit.normal = normal;
         raycastHit.material = GetMaterial();
+
         return true;
     }
 
