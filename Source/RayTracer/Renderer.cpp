@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "Canvas.h"
 #include <iostream>
+
 bool Renderer::Initialize()
 {
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -43,7 +44,7 @@ bool Renderer::CreateWindow(const std::string& title, int width, int height)
 void Renderer::PresentCanvas(const Canvas& canvas)
 {
 	// copy canvas texture to renderer
-	SDL_RenderCopy(renderer, canvas.texture, NULL, NULL);
+	SDL_RenderCopy(renderer, canvas.m_texture, NULL, NULL);
 	// present renderer to screen
 	SDL_RenderPresent(renderer);
 }

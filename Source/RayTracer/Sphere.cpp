@@ -1,10 +1,11 @@
 #include "Sphere.h"
+
 bool Sphere::Hit(const ray_t& ray, float minDistance, float maxDistance, raycastHit_t& raycastHit)
 {
-    glm::vec3 oc = ray.origin - center;
+    glm::vec3 oc = ray.origin - m_center;
     float a = glm::dot(ray.direction, ray.direction);
     float b = 2 * glm::dot(ray.direction, oc);
-    float c = glm::dot(oc, oc) - (radius * radius);
+    float c = glm::dot(oc, oc) - (m_radius * m_radius);
 
     // b^2 - 4ac
     float discriminant = (b * b) - (4 * a * c);
@@ -18,8 +19,8 @@ bool Sphere::Hit(const ray_t& ray, float minDistance, float maxDistance, raycast
         if (t > minDistance && t < maxDistance)
         {
             raycastHit.distance = t;
-            raycastHit.point = ray.At(t);
-            raycastHit.normal = (raycastHit.point - center) / radius;
+            raycastHit.point = ray.GetPoint(t);
+            raycastHit.normal = (raycastHit.point - m_center) / m_radius;
 
             raycastHit.material = GetMaterial();
 
@@ -29,8 +30,8 @@ bool Sphere::Hit(const ray_t& ray, float minDistance, float maxDistance, raycast
         if (t > minDistance && t < maxDistance)
         {
             raycastHit.distance = t;
-            raycastHit.point = ray.At(t);
-            raycastHit.normal = (raycastHit.point - center) / radius;
+            raycastHit.point = ray.GetPoint(t);
+            raycastHit.normal = (raycastHit.point - m_center) / m_radius;
 
             raycastHit.material = GetMaterial();
 

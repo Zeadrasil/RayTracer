@@ -24,6 +24,5 @@ private:
 	void ProcessMesh(aiMesh* mesh, const aiScene* scene, const glm::mat4& transform);
 
 private:
-	std::vector<glm::vec3> vertices;
+	std::vector<glm::vec3> m_vertices;
 };
-

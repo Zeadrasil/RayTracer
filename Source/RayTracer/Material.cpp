@@ -2,32 +2,32 @@
 #include "Random.h"
 #include "MathUtils.h"
 
-bool Lambertian::Scatter(const ray_t& ray, const raycastHit_t& raycastHit, color3_t& color, ray_t& scattered)
+bool Lambertian::Scatter(const ray_t& ray, const raycastHit_t& raycastHit, color3_t& color, ray_t& scattered) const
 {
     glm::vec3 target = raycastHit.point + raycastHit.normal + randomInUnitSphere();
     glm::vec3 direction = glm::normalize(target - raycastHit.point);
 
     scattered = ray_t{ raycastHit.point, direction };
-    color = albedo;
+    color = m_albedo;
 
     return true;
 }
 
-bool Metal::Scatter(const ray_t& ray, const raycastHit_t& raycastHit, glm::vec3& color, ray_t& scattered)
+bool Metal::Scatter(const ray_t& ray, const raycastHit_t& raycastHit, glm::vec3& color, ray_t& scattered) const
 {
-    glm::vec3 reflected = reflect(glm::normalize(ray.direction), raycastHit.normal);
+	glm::vec3 reflected = reflect(glm::normalize(ray.direction), raycastHit.normal);
 
-    // set scattered ray from reflected ray + random point in sphere (fuzz = 0 no randomness, fuzz = 1 random reflected)
-    // a mirror has a fuzz value of 0 and a diffused metal surface a higher value
-    scattered = ray_t{ raycastHit.point, reflected + randomInUnitSphere() * fuzz };
-    color = albedo;
-    // make sure that reflected ray is going away from surface normal (dot product > 0, angle between vectors < 90 degrees)
-    float icry = glm::dot(scattered.direction, raycastHit.normal);
-    bool piss = icry > 0;
-    return piss;
+	// set scattered ray from reflected ray + random point in sphere (fuzz = 0 no randomness, fuzz = 1 random reflected)
+	// a mirror has a fuzz value of 0 and a diffused metal surface a higher value
+	scattered = ray_t{ raycastHit.point, reflected + randomInUnitSphere() * m_fuzz };
+	color = m_albedo;
+	// make sure that reflected ray is going away from surface normal (dot product > 0, angle between vectors < 90 degrees)
+	float icry = glm::dot(scattered.direction, raycastHit.normal);
+	bool piss = icry > 0;
+	return piss;
 }
 
-bool Dielectric::Scatter(const ray_t& ray, const raycastHit_t& raycastHit, glm::vec3& color, ray_t& scattered)
+bool Dielectric::Scatter(const ray_t& ray, const raycastHit_t& raycastHit, glm::vec3& color, ray_t& scattered) const
 {
     glm::vec3 reflected = reflect(glm::normalize(ray.direction), raycastHit.normal);
     glm::vec3 refracted;
@@ -41,15 +41,15 @@ bool Dielectric::Scatter(const ray_t& ray, const raycastHit_t& raycastHit, glm::
     if (glm::dot(ray.direction, raycastHit.normal) > 0)
     {
         outNormal = -raycastHit.normal;
-        ni_over_nt = index;
-        cosine = index * glm::dot(ray.direction, raycastHit.normal) / ray.direction.length();
+        ni_over_nt = m_index;
+        cosine = m_index * glm::dot(ray.direction, raycastHit.normal) / ray.direction.length();
     }
     else
     {
         // ray hits outside of surface ( ray -> | <- normal )
         // ray is going into object (ray direction is facing in the opposite direction of the surface norma)
         outNormal = raycastHit.normal;
-        ni_over_nt = 1.0f / index;
+        ni_over_nt = 1.0f / m_index;
         cosine = -glm::dot(ray.direction, raycastHit.normal) / ray.direction.length();
     }
 
@@ -58,12 +58,12 @@ bool Dielectric::Scatter(const ray_t& ray, const raycastHit_t& raycastHit, glm::
     if (refract(ray.direction, outNormal, ni_over_nt, refracted))
     {
         // use schlick and cosine (angle) to determine if ray is reflected or refracted
-        reflectProbability = schlick(cosine, index);
+        reflectProbability = schlick(cosine, m_index);
     }
 
     // create reflected or refracted ray
-    scattered = (Randomf() < reflectProbability) ? ray_t{ raycastHit.point, reflected } : ray_t{ raycastHit.point, refracted };
-    color = albedo;
+    scattered = (random01() < reflectProbability) ? ray_t{ raycastHit.point, reflected } : ray_t{ raycastHit.point, refracted };
+    color = m_albedo;
 
     return true;
 }

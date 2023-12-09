@@ -1,17 +1,19 @@
 #include "Plane.h"
 #include "MathUtils.h"
+#include <memory>
+
 bool Plane::Hit(const ray_t& ray, float minDistance, float maxDistance, raycastHit_t& raycastHit)
 {
     // check dot product of ray direction and plane normal, if result is 0 then ray direction if parallel to plane
     // the dot product is 0 if the two vectors are perpendicular (90 degrees)
-    float denominator = dot(ray.direction, normal);
+    float denominator = dot(ray.direction, m_normal);
     if (approximately(denominator, 0.0f))
     {
         return false; // ray direction and plane parallel, no intersection
     }
 
     // get t (distance) along ray direction to hit point
-    float t = glm::dot(center - ray.origin, normal) / denominator;
+    float t = glm::dot(m_center - ray.origin, m_normal) / denominator;
     if (t < 0)
     {
         return false; // plane behind ray's origin, no intersection
@@ -25,8 +27,8 @@ bool Plane::Hit(const ray_t& ray, float minDistance, float maxDistance, raycastH
 
     // set raycast hit 
     raycastHit.distance = t;
-    raycastHit.point = ray.At(raycastHit.distance);
-    raycastHit.normal = glm::normalize(normal);
+    raycastHit.point = ray.GetPoint(raycastHit.distance);
+    raycastHit.normal = glm::normalize(m_normal);
     raycastHit.material = GetMaterial();
 
     return true;

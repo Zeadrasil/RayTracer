@@ -1,29 +1,35 @@
 #pragma once
-template<typename T>
-inline T lerp(const T& a, const T& b, float t)
-{
+#include <glm/glm.hpp>
+
+#define FLT_EPSILON 1.192092896e-07F
+
+template <typename T>
+inline T lerp(const T& a, const T& b, float t) {
 	return a + t * (b - a);
 }
-inline glm::vec3 cross(const glm::vec3& a, const glm::vec3& b)
+
+inline glm::vec3 cross(const glm::vec3& v1, const glm::vec3& v2)
 {
-	return { (float)( a.y * b.z - b.y * a.z), (float)(a.z * b.x - b.z - a.x), (float)(a.x * b.y - b.x * a.y) };
+	return { (v1.y * v2.z) - (v1.z * v2.y),
+			(v1.z * v2.x) - (v1.x * v2.z),
+			(v1.x * v2.y) - (v1.y * v2.x) };
 }
-inline float dot(const glm::vec3& a, const glm::vec3& b)
+
+inline float dot(const glm::vec3& v1, const glm::vec3& v2) {
+	return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
+}
+
+inline glm::vec3 reflect(const glm::vec3& v, const glm::vec3& n)
 {
-	return a.x * b.x + a.y * b.y + a.z * b.z;
+	return v - (2.0f * dot(n, v)) * n;
 }
-inline glm::vec3 reflect(glm::vec3 v, glm::vec3 n)
-{
-	return v - 2.0f * dot(n, v) * n;
-}
+
 inline bool approximately(float value1, float value2)
 {
-	return abs(value1 - value2) < FLT_EPSILON;
+	// check if the difference between the values is less than epsilon
+	return (abs(value1 - value2) < FLT_EPSILON);
 }
-inline bool approximately(float value1, float value2, float errorMargin)
-{
-	return abs(value1 - value2) < errorMargin;
-}
+
 inline bool refract(const glm::vec3& v, const glm::vec3& n, float index, glm::vec3& refracted)
 {
 	// normalize the incoming vector (v)
@@ -39,6 +45,7 @@ inline bool refract(const glm::vec3& v, const glm::vec3& n, float index, glm::ve
 
 	return false;
 }
+
 inline float schlick(float cosine, float index)
 {
 	// calculate specular reflection coefficient, or probability of reflection

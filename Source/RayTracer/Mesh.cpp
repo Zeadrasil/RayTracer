@@ -11,9 +11,9 @@
 bool Mesh::Hit(const ray_t& ray, float minDistance, float maxDistance, raycastHit_t& raycastHit)
 {
 	// check cast ray with mesh triangles 
-	for (int i = 0; i < vertices.size(); i += 3)
+	for (int i = 0; i < m_vertices.size(); i+=3)
 	{
-		Triangle triangle(vertices[i], vertices[i + 1], vertices[i + 2], material);
+		Triangle triangle(m_vertices[i], m_vertices[i + 1], m_vertices[i + 2], m_material);
 		if (triangle.Hit(ray, minDistance, maxDistance, raycastHit))
 		{
 			return true;
@@ -82,7 +82,7 @@ void Mesh::ProcessMesh(aiMesh* mesh, const aiScene* scene, const glm::mat4& tran
 		{
 			// add positions to vertices vector, face contains index into positions of the triangle
 			unsigned int index = face.mIndices[j];
-			vertices.push_back(positions[index]);
+			m_vertices.push_back(positions[index]);
 		}
 	}
 }

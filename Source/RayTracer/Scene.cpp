@@ -1,10 +1,10 @@
 #include "Scene.h"
-#include "Camera.h"
+#include "Canvas.h"
 #include "MathUtils.h"
-#include "Material.h"
 #include "Random.h"
 #include <iostream>
 #include <iomanip>
+
 void Scene::Render(Canvas& canvas, int numSamples, int depth)
 {
 	// cast ray for each point (pixel) on the canvas
@@ -23,12 +23,12 @@ void Scene::Render(Canvas& canvas, int numSamples, int depth)
 			{
 				// get normalized (0 - 1) point coordinates from pixel
 				// add random x and y offset (0-1) to each pixel
-				glm::vec2 point = (pixel + glm::vec2{ Randomf(), Randomf() }) / glm::vec2(canvas.GetSize());
+				glm::vec2 point = (pixel + glm::vec2{ random01(), random01()}) / canvas.GetSize();
 				// flip y
 				point.y = 1.0f - point.y;
 
 				// create ray from camera
-				ray_t ray = camera->GetRay(point);
+				ray_t ray = m_camera->GetRay(point);
 
 				// cast ray into scene
 				// add color value from trace
@@ -49,9 +49,9 @@ color3_t Scene::Trace(const ray_t& ray, float minDistance, float maxDistance, ra
 {
 	bool rayHit = false;
 	float closestDistance = maxDistance;
-
+ 
 	// check if scene objects are hit by the ray
-	for (auto& object : objects)
+	for (auto& object : m_objects)
 	{
 		// when checking objects don't include objects farther than closest hit (starts at max distance)
 		if (object->Hit(ray, minDistance, closestDistance, raycastHit))
@@ -61,7 +61,7 @@ color3_t Scene::Trace(const ray_t& ray, float minDistance, float maxDistance, ra
 			closestDistance = raycastHit.distance;
 		}
 	}
-
+ 
 	// if ray hit object, scatter (bounce) ray and check for next hit
 	if (rayHit)
 	{
@@ -81,11 +81,11 @@ color3_t Scene::Trace(const ray_t& ray, float minDistance, float maxDistance, ra
 			return raycastHit.material->GetEmissive();
 		}
 	}
-
+ 
 	// if ray not hit, return scene sky color
 	glm::vec3 direction = glm::normalize(ray.direction);
 	float t = (direction.y + 1) * 0.5f; // direction.y (-1 <-> 1) => (0 <-> 1)
-	color3_t color = lerp(bottomColor, topColor, t);
-
+	color3_t color = lerp(m_bottomColor, m_topColor, t);
+ 
 	return color;
 }

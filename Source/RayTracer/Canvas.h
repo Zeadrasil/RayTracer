@@ -1,25 +1,26 @@
 #pragma once
+#include <glm/glm.hpp>
 #include "Color.h"
-#include "glm/glm.hpp"
 #include <vector>
-struct SDL_Texture;
-class Renderer;
+
 class Canvas
 {
 public:
-	Canvas(int width, int height, const Renderer& renderer);
-	~Canvas();
+    Canvas(int width, int height, const class Renderer& renderer);
+    ~Canvas();
 
-	void Update();
+    void Update();
 
-	void Clear(const color4_t& color);
-	void DrawPoint(const glm::ivec2& point, const color4_t& color);
+    void Clear(const color4_t& color);
+    void DrawPoint(const glm::ivec2& point, const color4_t& color);
 
-	const glm::ivec2 GetSize() const { return size; };
-	friend Renderer;
+    const glm::vec2& GetSize() const { return m_size; }
+
+    friend class Renderer;
+
 private:
-	glm::ivec2 size{ 0 };
-	SDL_Texture* texture = nullptr;
-	std::vector<rgba_t> buffer;
-};
+    class SDL_Texture* m_texture = nullptr;
+    std::vector<rgba_t> m_buffer;
 
+    glm::ivec2 m_size{ 0 };
+};

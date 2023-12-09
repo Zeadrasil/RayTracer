@@ -1,6 +1,7 @@
 #pragma once
-#include "glm/glm.hpp"
+#include <glm/glm.hpp>
 #include "Ray.h"
+
 class Camera
 {
 public:
@@ -14,19 +15,18 @@ private:
 
 private:
 	// eye position
-	glm::vec3 eye{ 0 };
+	glm::vec3 m_eye{ 0 };
 
 	// camera axis
-	glm::vec3 right{ 0 };
-	glm::vec3 up{ 0 };
-	glm::vec3 forward{ 0 };
+	glm::vec3 m_right{ 0 };
+	glm::vec3 m_up{ 0 };
+	glm::vec3 m_forward{ 0 };
 
 	// view plane origin and horizontal and vertical axis
-	glm::vec3 lowerLeft{ 0 };
-	glm::vec3 horizontal{ 0 };
-	glm::vec3 vertical{ 0 };
+	glm::vec3 m_lowerLeft{ 0 };
+	glm::vec3 m_horizontal{ 0 };
+	glm::vec3 m_vertical{ 0 };
 
-	float fov{ 0 }; // field of view (angle is in degrees)
-	float aspectRatio{ 0 }; // screen width / screen height (800 / 600 = 1.333)
+	float m_fov{ 0 }; // field of view (angle is in degrees)
+	float m_aspectRatio{ 0 }; // screen width / screen height (800 / 600 = 1.333)
 };
-

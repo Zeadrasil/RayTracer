@@ -1,45 +1,41 @@
 #pragma once
-#include <random>
-#include "glm/glm.hpp"
-#include "glm/gtx/norm.hpp"
-inline void SeedRandom(unsigned int seed)
+#include <stdio.h>
+#include <stdlib.h>
+#include <algorithm>
+#include <glm/glm.hpp>
+#include <glm/gtx/norm.hpp>
+
+inline void seedRandom(unsigned int seed)
 {
-	srand(seed);
+    srand(seed);
 }
-inline int Random()
+
+inline float random01()
 {
-	return rand();
+    return rand() / (float)RAND_MAX;
 }
-inline float Randomf()
+
+inline float random(float min, float max)
 {
-	return float(Random() / (float)RAND_MAX);
+    if (min > max) std::swap(min, max);
+    return min + (max - min) * random01();
 }
-inline int Random(int max)
+
+inline glm::vec3 random(const glm::vec3& min, const glm::vec3& max)
 {
-	return Random() % max;
+	return (glm::vec3{ random(min.x, max.x),random(min.y, max.y),random(min.z, max.z) });
 }
-inline float Randomf(float max)
-{
-	return Randomf() * max;
-}
-inline int Random(int min, int max)
-{
-	return (min < max) ? (Random() % (max - min)) + min : (min + max) / 2;
-}
-inline float Randomf(float min, float max)
-{
-	return (min < max) ? (Randomf() * (max - min)) + min : (min + max) / 2.0f;
-}
-inline glm::vec3 RandomVec3(const glm::vec3& min, const glm::vec3& max)
-{
-	return glm::vec3(Randomf(min.x, max.x), Randomf(min.y, max.y), Randomf(min.z, max.z));
-}
+
 inline glm::vec3 randomInUnitSphere()
 {
 	glm::vec3 v;
+	// generate random vectors between -1 <-> +1, return vector if length is less than 1
 	do
 	{
-		v = RandomVec3({ -1, -1, -1 }, { 1, 1, 1 });
-	} while (glm::length2(v) >= 1);
+		auto v1 = glm::vec3{ -1, -1, -1 };
+		auto v2 = glm::vec3{ 1, 1, 1 };
+		v = random(v1, v2);
+	} while (glm::length2(v) >= 1.0f);
+
 	return v;
 }

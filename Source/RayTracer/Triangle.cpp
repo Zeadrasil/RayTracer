@@ -4,8 +4,8 @@
 bool Triangle::Hit(const ray_t& ray, float minDistance, float maxDistance, raycastHit_t& raycastHit)
 {
     // set edges of the triangle
-    glm::vec3 edge1 = v2 - v1;
-    glm::vec3 edge2 = v3 - v1;
+    glm::vec3 edge1 = m_v2 - m_v1;
+    glm::vec3 edge2 = m_v3 - m_v1;
 
     // calculate triangle normal
     glm::vec3 normal = cross(edge1, edge2);
@@ -21,7 +21,7 @@ bool Triangle::Hit(const ray_t& ray, float minDistance, float maxDistance, rayca
 
     float invDet = 1 / determinant;
 
-    glm::vec3 tvec = ray.origin - v1;
+    glm::vec3 tvec = ray.origin - m_v1;
     float u = dot(tvec, pvec) * invDet;
     if (u < 0 || u > 1)
     {
@@ -40,8 +40,8 @@ bool Triangle::Hit(const ray_t& ray, float minDistance, float maxDistance, rayca
     {
         // set raycast hit
         raycastHit.distance = t;
-        raycastHit.point = ray.At(t);
-        raycastHit.normal = normal;
+        raycastHit.point = ray.GetPoint(t);
+        raycastHit.normal = glm::normalize(normal);
         raycastHit.material = GetMaterial();
 
         return true;
